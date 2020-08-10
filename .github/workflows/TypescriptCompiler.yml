@@ -29,6 +29,3 @@ jobs:
       run: npm install
     - name: Typescript compiler
       uses: iCrawl/action-tsc@v1
-      with:
-        # Optional project path.
-        build: js
