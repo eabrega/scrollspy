@@ -1,1 +1,1 @@
-# scroll-awesome
+# scroll-awesome v1.0
