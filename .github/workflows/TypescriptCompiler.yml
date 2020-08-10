@@ -13,4 +13,4 @@ jobs:
     - name: npm install
       run: npm install
     - name: tsc
-      run: /home/runner/work/scroll-awesome/scroll-awesome/node_modules/typescript/bin/tsc -p /src/tsconfig.json
+      run: /home/runner/work/scroll-awesome/scroll-awesome/node_modules/typescript/bin/tsc -p ./src/tsconfig.json
