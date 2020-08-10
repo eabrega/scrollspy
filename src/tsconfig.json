@@ -2,6 +2,7 @@
     "compilerOptions": {
         "target": "es6",
         "strict": true,
+        "incremental": false,
         "removeComments": true,
         "outDir": "js",
         "outFile": "js/scroll-awesome.js",
