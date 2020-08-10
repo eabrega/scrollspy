@@ -1,0 +1,6 @@
+{
+    "devDependencies": {
+        "cjs-loader": "0.1.0"
+    },
+    "dependencies": {}
+}
