@@ -13,4 +13,4 @@ jobs:
     - name: npm install
       run: npm install
     - name: tsc
-      run: pwd
+      run: /node_modules/typescript/bin/tsc -p tsconfig.json
