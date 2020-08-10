@@ -11,6 +11,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: npm install
-      run: npm install
+      run: npm install -g typescript
     - name: tsc
-      run: /node_modules/typescript/bin/tsc -p tsconfig.json
+      run: tsc -p /src/tsconfig.json
