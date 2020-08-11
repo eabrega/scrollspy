@@ -1,7 +1,7 @@
 namespace ScrollAwesome {
     export class Cursor {
         private readonly _cursorBody: HTMLDivElement;
-
+        
         constructor(cursorBody: HTMLDivElement) {
             this._cursorBody = cursorBody;
         }

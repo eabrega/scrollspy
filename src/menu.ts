@@ -14,7 +14,7 @@ namespace ScrollAwesome {
         private readonly _menuBody: HTMLUListElement;
         private readonly _menuItems: Array<MenuItem>;
         private readonly _cursor: Cursor;
-
+        
         constructor(cursorBody: HTMLDivElement, menuBody: HTMLUListElement, menuItems: Array<MenuItem>) {
             this._cursor = new Cursor(cursorBody);
             this._menuItems = menuItems;

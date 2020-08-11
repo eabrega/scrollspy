@@ -2,10 +2,12 @@
     "compilerOptions": {
         "target": "es6",
         "strict": true,
+        "sourceMap": true,
         "removeComments": true,
-        "outDir": "js",
-        "outFile": "js/scroll-awesome.js",
+        "outDir": "../../app/js/lib/",
+        "outFile": "../../app/js/lib/scroll-awesome.js",
         "rootDir": "",
-        "module": "system"
+        "allowSyntheticDefaultImports" : true,
+        "pretty": true,
     }
 }
