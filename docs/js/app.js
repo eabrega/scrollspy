@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
         "menu",
         x => {
             currentParagraphName.innerText = document.getElementById(x.id).innerText;
-            currentParagraphPercent.innerText = x.percent;
+            currentParagraphPercent.innerText = x.percent  + '%';
         }
     );
 });
