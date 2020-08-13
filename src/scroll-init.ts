@@ -1,11 +1,11 @@
 ///<reference path="page.ts"/>
-namespace DSS {
+namespace DualSideScroll {
     export type ProgressHendler = (progress: IProgress) => void;
-    export class ScrollInit {
+    export class Init {
+        private readonly _page: Page;
         constructor(
-            offsetY: number,
-            cursorId: string,
-            menuId: string,
+            cursorSelector: string,
+            menuSelector: string,
             isDebug?: boolean,
             callBack?: ProgressHendler
         ) {
@@ -15,12 +15,11 @@ namespace DSS {
                 document.body.clientHeight, document.documentElement.clientHeight
             );
 
-            let cursor = this.GetElementOrThrowError(cursorId) as HTMLDivElement;
-            let menu = this.GetElementOrThrowError(menuId) as HTMLUListElement;
+            let cursor = this.GetElementOrThrowError(cursorSelector) as HTMLDivElement;
+            let menu = this.GetElementOrThrowError(menuSelector) as HTMLUListElement;
 
-            new Page(
+            this._page = new Page(
                 height,
-                offsetY,
                 cursor,
                 menu,
                 isDebug,
@@ -28,10 +27,10 @@ namespace DSS {
             );
         }
 
-        private GetElementOrThrowError(id: string): Element {
-            let element = document.querySelector(id);
+        private GetElementOrThrowError(selector: string): Element {
+            let element = document.querySelector(selector);
 
-            if (!element) throw new Error(`Element with id '${id}' not found!`);
+            if (!element) throw new Error(`Element with selector '${selector}' not found!`);
 
             return element;
         }

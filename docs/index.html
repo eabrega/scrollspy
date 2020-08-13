@@ -20,21 +20,22 @@
             </div>
         </div>
         <div class="contacts">
-            <a href="mailto:eabrega@gmail.com"><i class="far fa-envelope"></i></a>
-            <a href="https://github.com/eabrega/dualside-scroll"><i class="fab fa-github"></i></a>
+            <a href="mailto:eabrega@gmail.com"><alt-text>email</alt-text><i class="far fa-envelope"></i></a>
+            <a href="https://github.com/eabrega/dualside-scroll"><alt-text>github</alt-text><i class="fab fa-github"></i></a>
         </div>
     </header>
-    <nav>
+    <nav id="home">
         <div id="cursor"></div>
-        <ul id="meny">
-            <li><a href="#link1">Paragraph A</a></li>
-            <li><a href="#link2">Paragraph B (for example, it's a very long string)</a></li>
-            <li><a href="#link3">Paragraph C</a></li>
-            <li><a href="#link4">Paragraph D</a></li>
-        </ul>
+        <menu>
+            <a href="#link1">Paragraph A</a>
+            <a href="#link2">Paragraph B (for example, it's a very long string)</a>
+            <a href="#link3">Paragraph C</a>
+            <a href="#link4">Paragraph D</a>
+        </menu>
     </nav>
     <content>
         <h1 id="link1">Paragraph A</h1>
+        <a class="go-home" href="#home">do home</a>
         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam eaque possimus aut omnis nesciunt
             voluptatibus quisquam inventore voluptates tempore adipisci, perferendis nihil culpa iste corporis sequi
             quo obcaecati mollitia tempora repudiandae quasi laboriosam, suscipit ipsum natus sint. Odit quae
@@ -91,6 +92,7 @@
             veritatis?
         </p>
         <h1 id="link2">Paragraph B (for example, it's a very long string)</h1>
+        <a class="go-home" href="#home">do home</a>
         <p>Nobis dolore, qui repellat a nulla debitis inventore repellendus iusto culpa autem maxime deserunt
             officia
             illo alias architecto eaque. Nisi eius modi mollitia, dolorum aliquid aperiam minima expedita similique!
@@ -148,6 +150,7 @@
             pariatur
             corporis a odit. Tenetur consequuntur incidunt nulla officiis perferendis.</p>
         <h1 id="link3">Paragraph C</h1>
+        <a class="go-home" href="#home">do home</a>
         <p>Quos, odio animi obcaecati voluptatum nam eum alias aperiam quis corrupti itaque voluptate, ratione
             repudiandae iste illo nihil modi id consectetur error veritatis facere neque nobis in hic? Fuga, a nemo.
             In
@@ -204,6 +207,7 @@
             ipsa!
         </p>
         <h1 id="link4">Paragraph D</h1>
+        <a class="go-home" href="#home">do home</a>
         <p>Dolor possimus laboriosam pariatur? Adipisci, hic sint, laboriosam illo aspernatur doloribus nulla a
             porro
             expedita id fuga delectus quae eos, ut dolore eaque accusamus magni facilis temporibus. In minus, maxime
@@ -263,10 +267,10 @@
             delectus sapiente alias magni.</p>
     </content>
     <footer>
-        <span id="paragraph">Part:</span><span id="percent">%</span>
+        <status><span id="current-paragraph-name"></span><span id="current-paragraph-percent"></span>%</status>
     </footer>
+    <script src="./js/lib/dual-side-scroll.js"></script>
+    <script src="./js/app.js"></script>
 </body>
-<script src="./js/lib/scroll-awesome.min.js"></script>
-<script src="./js/app.js"></script>
 
 </html>

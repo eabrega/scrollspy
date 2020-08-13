@@ -1,6 +1,6 @@
 ///<reference path="menuItem.ts"/>
 ///<reference path="cursor.ts"/>
-namespace ScrollAwesome {
+namespace DualSideScroll {
     export interface INameValue {
         name: string;
         value: string;
@@ -10,22 +10,17 @@ namespace ScrollAwesome {
         percent: number;
     }
     export class Menu {
-        private _debugWindow: HTMLDivElement;
-        private readonly _menuBody: HTMLUListElement;
+        private readonly _menuBody: HTMLElement;
         private readonly _menuItems: Array<MenuItem>;
         private readonly _cursor: Cursor;
-        
-        constructor(cursorBody: HTMLDivElement, menuBody: HTMLUListElement, menuItems: Array<MenuItem>) {
+
+        constructor(cursorBody: HTMLDivElement, menuBody: HTMLElement, menuItems: Array<MenuItem>) {
             this._cursor = new Cursor(cursorBody);
             this._menuItems = menuItems;
             this._menuBody = menuBody;
-
-            this._debugWindow = <HTMLDivElement>(document.createElement('div'));
-            this._debugWindow.id = "debug-window";
-            this._menuBody.appendChild(this._debugWindow);
         }
         public UpdateCursorPosition(progress: IProgress) {
-            let indexParagraph = this._menuItems.findIndex(i=>i.Id == progress.id)
+            let indexParagraph = this._menuItems.findIndex(i => i.Id == progress.id)
             let height = this._menuItems
                 .filter((item, index) => {
                     if (index < indexParagraph + 1) {
@@ -39,11 +34,9 @@ namespace ScrollAwesome {
 
             this._cursor.Move(curentCursorPosition);
         }
-        public UpdateDebudWindow(params: Array<INameValue>) {
-            var rows = params.map((param) => {
-                return `${param.name}: ${param.value}<br/>`;
-            });
-            this._debugWindow.innerHTML = rows.join("");
+
+        public get Items(): Array<MenuItem> {
+            return this._menuItems;
         }
     }
 }

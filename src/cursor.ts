@@ -1,4 +1,4 @@
-namespace ScrollAwesome {
+namespace DualSideScroll {
     export class Cursor {
         private readonly _cursorBody: HTMLDivElement;
         

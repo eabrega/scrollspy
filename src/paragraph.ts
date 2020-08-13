@@ -1,4 +1,4 @@
-namespace ScrollAwesome {
+namespace DualSideScroll {
     export class Paragraph {
         private readonly _id: string;
         private readonly _top: number;

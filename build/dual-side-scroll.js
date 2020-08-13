@@ -1,6 +1,6 @@
 "use strict";
-var ScrollAwesome;
-(function (ScrollAwesome) {
+var DualSideScroll;
+(function (DualSideScroll) {
     class Cursor {
         constructor(cursorBody) {
             this._cursorBody = cursorBody;
@@ -12,10 +12,10 @@ var ScrollAwesome;
             return this._cursorBody.getBoundingClientRect().height;
         }
     }
-    ScrollAwesome.Cursor = Cursor;
-})(ScrollAwesome || (ScrollAwesome = {}));
-var ScrollAwesome;
-(function (ScrollAwesome) {
+    DualSideScroll.Cursor = Cursor;
+})(DualSideScroll || (DualSideScroll = {}));
+var DualSideScroll;
+(function (DualSideScroll) {
     class MenuItem {
         constructor(id, height) {
             this._id = id;
@@ -28,18 +28,15 @@ var ScrollAwesome;
             return this._height;
         }
     }
-    ScrollAwesome.MenuItem = MenuItem;
-})(ScrollAwesome || (ScrollAwesome = {}));
-var ScrollAwesome;
-(function (ScrollAwesome) {
+    DualSideScroll.MenuItem = MenuItem;
+})(DualSideScroll || (DualSideScroll = {}));
+var DualSideScroll;
+(function (DualSideScroll) {
     class Menu {
         constructor(cursorBody, menuBody, menuItems) {
-            this._cursor = new ScrollAwesome.Cursor(cursorBody);
+            this._cursor = new DualSideScroll.Cursor(cursorBody);
             this._menuItems = menuItems;
             this._menuBody = menuBody;
-            this._debugWindow = (document.createElement('div'));
-            this._debugWindow.id = "debug-window";
-            this._menuBody.appendChild(this._debugWindow);
         }
         UpdateCursorPosition(progress) {
             let indexParagraph = this._menuItems.findIndex(i => i.Id == progress.id);
@@ -55,17 +52,14 @@ var ScrollAwesome;
             let curentCursorPosition = (height - currentItemHeight + this._cursor.Height) + (currentItemHeight * progress.percent / 100);
             this._cursor.Move(curentCursorPosition);
         }
-        UpdateDebudWindow(params) {
-            var rows = params.map((param) => {
-                return `${param.name}: ${param.value}<br/>`;
-            });
-            this._debugWindow.innerHTML = rows.join("");
+        get Items() {
+            return this._menuItems;
         }
     }
-    ScrollAwesome.Menu = Menu;
-})(ScrollAwesome || (ScrollAwesome = {}));
-var ScrollAwesome;
-(function (ScrollAwesome) {
+    DualSideScroll.Menu = Menu;
+})(DualSideScroll || (DualSideScroll = {}));
+var DualSideScroll;
+(function (DualSideScroll) {
     class Paragraph {
         constructor(id, top, height, name) {
             this._id = id;
@@ -86,26 +80,27 @@ var ScrollAwesome;
             return this._height;
         }
     }
-    ScrollAwesome.Paragraph = Paragraph;
-})(ScrollAwesome || (ScrollAwesome = {}));
-var ScrollAwesome;
-(function (ScrollAwesome) {
+    DualSideScroll.Paragraph = Paragraph;
+})(DualSideScroll || (DualSideScroll = {}));
+var DualSideScroll;
+(function (DualSideScroll) {
     class Page {
-        constructor(height, offsetY, cursorBody, menuBody, isDedug, callBack) {
+        constructor(height, cursorBody, menuBody, isDedug, callBack) {
             var _a;
+            this._offsetY = 0;
             this._curentPosition = 0;
             this._callBack = () => null;
             this._isDebug = false;
             this._height = height;
-            this._offsetY = offsetY;
             this._callBack = callBack;
             this._isDebug = isDedug;
             let menuItems = this.MapToMenuItems(Array.from(menuBody.children));
             this._paragraphs = this.MapToParagraphs(menuItems);
-            this._menu = new ScrollAwesome.Menu(cursorBody, menuBody, menuItems);
+            this._menu = new DualSideScroll.Menu(cursorBody, menuBody, menuItems);
             this._menu.UpdateCursorPosition(this.Progress);
             (_a = this._callBack) === null || _a === void 0 ? void 0 : _a.call(this, this.Progress);
             window.addEventListener('scroll', () => this.Scrolling());
+            window.addEventListener('resize', () => this.ReinitHeight());
         }
         MapToParagraphs(menyItems) {
             let queryString = menyItems
@@ -119,37 +114,30 @@ var ScrollAwesome;
                 let nextElementHeight = Math.round(((_b = (_a = array[index + 1]) === null || _a === void 0 ? void 0 : _a.getBoundingClientRect()) === null || _b === void 0 ? void 0 : _b.top) + window.pageYOffset - this._offsetY) - 3;
                 if (!nextElementHeight)
                     nextElementHeight = this._height;
-                return new ScrollAwesome.Paragraph(element.getAttribute("id"), currentElementHeight, nextElementHeight - currentElementHeight, element.textContent);
+                return new DualSideScroll.Paragraph(element.getAttribute("id"), currentElementHeight, nextElementHeight - currentElementHeight, element.textContent);
             });
             return paragraphs;
         }
-        MapToMenuItems(liElements) {
-            if (liElements.length < 1)
+        MapToMenuItems(Elements) {
+            if (Elements.length < 1)
                 throw new Error('Menu can not be empty!');
-            let menuItems = liElements
+            let menuItems = Elements
                 .map(element => {
-                var _a, _b;
-                let id = (_b = (_a = element.querySelector('a')) === null || _a === void 0 ? void 0 : _a.getAttribute("href")) === null || _b === void 0 ? void 0 : _b.replace('#', '');
+                var _a, _b, _c, _d;
+                let id = element.tagName === 'A' ?
+                    (_a = element.getAttribute("href")) === null || _a === void 0 ? void 0 : _a.replace('#', '') :
+                    (_c = (_b = element.querySelector('a')) === null || _b === void 0 ? void 0 : _b.getAttribute("href")) === null || _c === void 0 ? void 0 : _c.replace('#', '');
                 if (!id)
-                    throw new Error(`Menu item '${element.textContent}' has not link to paragraph.`);
-                return new ScrollAwesome.MenuItem(id, element.getBoundingClientRect().height);
+                    throw new Error(`Menu item '${(_d = element.textContent) === null || _d === void 0 ? void 0 : _d.trim()}' has not link to paragraph.`);
+                return new DualSideScroll.MenuItem(id, element.getBoundingClientRect().height);
             });
             return menuItems;
         }
         Scrolling() {
-            var _a, _b, _c;
+            var _a;
             this._curentPosition = window.pageYOffset;
             this._menu.UpdateCursorPosition(this.Progress);
             (_a = this._callBack) === null || _a === void 0 ? void 0 : _a.call(this, this.Progress);
-            if (this._isDebug) {
-                this._menu.UpdateDebudWindow([
-                    { name: "pageY", value: window.pageYOffset.toString() },
-                    { name: "pageSize", value: this._height.toString() },
-                    { name: "partProgress", value: `${this.Progress.percent} %` },
-                    { name: "partName", value: (_c = (_b = this.CurrentParagraph) === null || _b === void 0 ? void 0 : _b.Name) !== null && _c !== void 0 ? _c : "-" },
-                    { name: "partHeight", value: (this.CurrentParagraph.Height).toString() },
-                ]);
-            }
         }
         get CurrentParagraph() {
             let curentPart = this._paragraphs.find(paragraph => {
@@ -167,17 +155,21 @@ var ScrollAwesome;
                 percent: progress
             };
         }
+        ReinitHeight() {
+            this._height = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, document.body.offsetHeight, document.documentElement.offsetHeight, document.body.clientHeight, document.documentElement.clientHeight);
+            this._paragraphs = this.MapToParagraphs(this._menu.Items);
+        }
     }
-    ScrollAwesome.Page = Page;
-})(ScrollAwesome || (ScrollAwesome = {}));
-var ScrollAwesome;
-(function (ScrollAwesome) {
-    class Scroller {
-        constructor(offsetY, cursorId, menuId, isDebug, callBack) {
+    DualSideScroll.Page = Page;
+})(DualSideScroll || (DualSideScroll = {}));
+var DualSideScroll;
+(function (DualSideScroll) {
+    class Init {
+        constructor(cursorId, menuId, isDebug, callBack) {
             let height = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, document.body.offsetHeight, document.documentElement.offsetHeight, document.body.clientHeight, document.documentElement.clientHeight);
             let cursor = this.GetElementOrThrowError(cursorId);
             let menu = this.GetElementOrThrowError(menuId);
-            new ScrollAwesome.Page(height, offsetY, cursor, menu, isDebug, callBack);
+            this._page = new DualSideScroll.Page(height, cursor, menu, isDebug, callBack);
         }
         GetElementOrThrowError(id) {
             let element = document.querySelector(id);
@@ -186,6 +178,6 @@ var ScrollAwesome;
             return element;
         }
     }
-    ScrollAwesome.Scroller = Scroller;
-})(ScrollAwesome || (ScrollAwesome = {}));
-//# sourceMappingURL=scroll-awesome.js.map
+    DualSideScroll.Init = Init;
+})(DualSideScroll || (DualSideScroll = {}));
+//# sourceMappingURL=dual-side-scroll.js.map

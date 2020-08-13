@@ -1,4 +1,4 @@
-namespace ScrollAwesome {
+namespace DualSideScroll {
     export class MenuItem {
         private _id: string;
         private _height: number;

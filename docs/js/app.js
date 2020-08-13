@@ -1,16 +1,14 @@
-const anhorTopOffset = 0;
-
 document.addEventListener("DOMContentLoaded", function (event) {
-    let scroller = new ScrollAwesome.Scroller(
-        anhorTopOffset,
+    let currentParagraphName = document.getElementById('current-paragraph-name');
+    let currentParagraphPercent = document.getElementById('current-paragraph-percent');
+
+    let scroll = new DualSideScroll.Init(
         "#cursor",
-        "#meny",
-        false,
+        "menu",
+        true,
         x => {
-            console.log(x);
-            let part = document.getElementById(x.id).innerText;
-            document.getElementById('paragraph').innerText = part;
-            document.getElementById('percent').innerText = `${x.percent} %`
+            currentParagraphName.innerText = document.getElementById(x.id).innerText;
+            currentParagraphPercent.innerText = x.percent;
         }
     );
 });

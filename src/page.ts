@@ -1,26 +1,24 @@
 ///<reference path="paragraph.ts"/>
 ///<reference path="menu.ts"/>
 ///<reference path="menuItem.ts"/>
-namespace ScrollAwesome {
+namespace DualSideScroll {
     export class Page {
-        private readonly _height: number;
-        private readonly _offsetY: number;
+        private _height: number;
+        private readonly _offsetY: number = 0;
         private _curentPosition: number = 0;
-        private readonly _paragraphs: Array<Paragraph>;
+        private _paragraphs: Array<Paragraph>;
         private readonly _menu: Menu;
         private readonly _callBack?: ProgressHendler = () => null;
         private readonly _isDebug?: boolean = false;
 
         constructor(
             height: number,
-            offsetY: number,
             cursorBody: HTMLDivElement,
-            menuBody: HTMLUListElement,
+            menuBody: HTMLElement,
             isDedug?: boolean,
             callBack?: ProgressHendler,
         ) {
             this._height = height;
-            this._offsetY = offsetY;
             this._callBack = callBack;
             this._isDebug = isDedug;
 
@@ -35,6 +33,7 @@ namespace ScrollAwesome {
             this._menu.UpdateCursorPosition(this.Progress);
             this._callBack?.(this.Progress);
             window.addEventListener('scroll', () => this.Scrolling());
+            window.addEventListener('resize', () => this.ReinitHeight());
         }
 
         private MapToParagraphs(menyItems: Array<MenuItem>): Array<Paragraph> {
@@ -59,12 +58,16 @@ namespace ScrollAwesome {
             return paragraphs;
         }
 
-        private MapToMenuItems(liElements: Array<Element>): Array<MenuItem> {
-            if (liElements.length < 1) throw new Error('Menu can not be empty!');
-            let menuItems = liElements
+        private MapToMenuItems(Elements: Array<Element>): Array<MenuItem> {
+            if (Elements.length < 1) throw new Error('Menu can not be empty!');
+            let menuItems = Elements
                 .map(element => {
-                    let id = element.querySelector('a')?.getAttribute("href")?.replace('#', '') as string;
-                    if (!id) throw new Error(`Menu item '${element.textContent}' has not link to paragraph.`);
+                    let id = element.tagName === 'A' ?
+                        element.getAttribute("href")?.replace('#', '') as string :
+                        element.querySelector('a')?.getAttribute("href")?.replace('#', '') as string;
+
+                    if (!id) throw new Error(`Menu item '${element.textContent?.trim()}' has not link to paragraph.`);
+
                     return new MenuItem(
                         id,
                         element.getBoundingClientRect().height
@@ -77,16 +80,6 @@ namespace ScrollAwesome {
             this._curentPosition = window.pageYOffset;
             this._menu.UpdateCursorPosition(this.Progress);
             this._callBack?.(this.Progress);
-
-            if (this._isDebug) {
-                this._menu.UpdateDebudWindow(<Array<INameValue>>[
-                    { name: "pageY", value: window.pageYOffset.toString() },
-                    { name: "pageSize", value: this._height.toString() },
-                    { name: "partProgress", value: `${this.Progress.percent} %` },
-                    { name: "partName", value: this.CurrentParagraph?.Name ?? "-" },
-                    { name: "partHeight", value: (this.CurrentParagraph.Height).toString() },
-                ]);
-            }
         }
 
         private get CurrentParagraph(): Paragraph {
@@ -104,6 +97,16 @@ namespace ScrollAwesome {
                 id: curentParagraph.Id,
                 percent: progress
             }
+        }
+
+        private ReinitHeight() {           
+            this._height = Math.max(
+                document.body.scrollHeight, document.documentElement.scrollHeight,
+                document.body.offsetHeight, document.documentElement.offsetHeight,
+                document.body.clientHeight, document.documentElement.clientHeight
+            );
+
+            this._paragraphs = this.MapToParagraphs(this._menu.Items);
         }
     }
 }
