@@ -121,12 +121,10 @@ var DualSideScroll;
                 throw new Error('Menu can not be empty!');
             let menuItems = Elements
                 .map(element => {
-                var _a, _b, _c, _d;
-                let id = element.tagName === 'A' ?
-                    (_a = element.getAttribute("href")) === null || _a === void 0 ? void 0 : _a.replace('#', '') :
-                    (_c = (_b = element.querySelector('a')) === null || _b === void 0 ? void 0 : _b.getAttribute("href")) === null || _c === void 0 ? void 0 : _c.replace('#', '');
+                var _a, _b;
+                let id = (_a = element.getAttribute("href")) === null || _a === void 0 ? void 0 : _a.replace('#', '');
                 if (!id)
-                    throw new Error(`Menu item '${(_d = element.textContent) === null || _d === void 0 ? void 0 : _d.trim()}' has not link to paragraph.`);
+                    throw new Error(`Menu item '${(_b = element.textContent) === null || _b === void 0 ? void 0 : _b.trim()}' has not link to paragraph.`);
                 return new DualSideScroll.MenuItem(id, element.getBoundingClientRect().height);
             });
             return menuItems;

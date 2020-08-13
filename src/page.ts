@@ -59,10 +59,7 @@ namespace DualSideScroll {
             if (Elements.length < 1) throw new Error('Menu can not be empty!');
             let menuItems = Elements
                 .map(element => {
-                    let id = element.tagName === 'A' ?
-                        element.getAttribute("href")?.replace('#', '') as string :
-                        element.querySelector('a')?.getAttribute("href")?.replace('#', '') as string;
-
+                    let id = element.getAttribute("href")?.replace('#', '') as string;
                     if (!id) throw new Error(`Menu item '${element.textContent?.trim()}' has not link to paragraph.`);
 
                     return new MenuItem(
