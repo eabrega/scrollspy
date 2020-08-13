@@ -165,16 +165,16 @@ var DualSideScroll;
 var DualSideScroll;
 (function (DualSideScroll) {
     class Init {
-        constructor(cursorId, menuId, isDebug, callBack) {
+        constructor(cursorSelector, menuSelector, isDebug, callBack) {
             let height = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, document.body.offsetHeight, document.documentElement.offsetHeight, document.body.clientHeight, document.documentElement.clientHeight);
-            let cursor = this.GetElementOrThrowError(cursorId);
-            let menu = this.GetElementOrThrowError(menuId);
+            let cursor = this.GetElementOrThrowError(cursorSelector);
+            let menu = this.GetElementOrThrowError(menuSelector);
             this._page = new DualSideScroll.Page(height, cursor, menu, isDebug, callBack);
         }
-        GetElementOrThrowError(id) {
-            let element = document.querySelector(id);
+        GetElementOrThrowError(selector) {
+            let element = document.querySelector(selector);
             if (!element)
-                throw new Error(`Element with id '${id}' not found!`);
+                throw new Error(`Element with selector '${selector}' not found!`);
             return element;
         }
     }
