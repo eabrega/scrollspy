@@ -1,40 +1,49 @@
-# dual-side scroll v1.0
+# dual-side scroll v1.0.1
 ## Назначение
-Эта  предназначенна для отображениея текущего положения страницы при помщи скользящего указателя в блоке навигации.
+Скрипт предназначен для отображения текущего положения страницы при помощи скользящего указателя в блоке навигации. 
 
-Всякий раз когда просиходит событие `onScroll` функция обратного вызова возвращает id текущего параграфа и процент на который он был "прокручен".
+[LiveDemo](https://eabrega.github.io/dual-side-scroll)
 
 ## Как это работает
-Все что нужно для коректной работы - это наличие бокового блока меню с установленными ссылками на соотвествующие парагрфы в тексте.
+Все что нужно - это наличие бокового блока меню с установленными ссылками на соотвествующие параграфы в тексте.
+При создании объекта нужно указать селекторы курсора и меню, а так же функцию обратного вызова. 
 
-## Использование
+При возникновении события onscroll в обработчик будет передан объект:
+```typescript
+    Progress {
+        // id текущего параграфа
+        id: string;
+        // процент на который он был просмотрен
+        percent: number;
+    }
+```
+При изменении размера окна скрипт атоматически пересчитает пропорциональные значения. Это бывает нужно в мобильной версии. При повороте экрана устройства прокрутка продолжит работать корректно.
 
-`(html)`
+
+## Подключение
+
+`<script src="./js/lib/dual-side-scroll.min.js"></script>`
 
 ## Пример
 
-Исхдный код Demo страницы.
+Исходный код скрипта [LiveDemo](https://eabrega.github.io/dual-side-scroll) страницы.
 ```javascript
-    document.addEventListener("DOMContentLoaded", function (event) {
-    let scroller = new ScrollAwesome.Scroller(
-        anhorTopOffset,
+document.addEventListener("DOMContentLoaded", function (event) {
+    let currentParagraphName = document.getElementById('current-paragraph-name');
+    let currentParagraphPercent = document.getElementById('current-paragraph-percent');
+
+    let scroll = new DualSideScroll.Init(
         "#cursor",
-        "#meny",
-        false,
+        "menu",
         x => {
-            console.log(x);
-            let part = document.getElementById(x.id).innerText;
-            document.getElementById('paragraph').innerText = part;
-            document.getElementById('percent').innerText = `${x.percent} %`
+            currentParagraphName.innerText = document.getElementById(x.id).innerText;
+            currentParagraphPercent.innerText = x.percent;
         }
     );
 });
 ```
 
-## Известные проблемы
-
-При изменении размера экрана необходимо перезагрузить страниуц или пересоздать объект, так-как пропорции не будут пересчитанны.
-
 ## Планируемые обновления
 
-* 11
+* Интерактивный курсор с помощью которого можно прокручивать страницу
+* Закладки в параграфах

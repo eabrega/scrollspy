@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
     let scroll = new DualSideScroll.Init(
         "#cursor",
         "menu",
-        true,
         x => {
             currentParagraphName.innerText = document.getElementById(x.id).innerText;
             currentParagraphPercent.innerText = x.percent;

@@ -85,15 +85,13 @@ var DualSideScroll;
 var DualSideScroll;
 (function (DualSideScroll) {
     class Page {
-        constructor(height, cursorBody, menuBody, isDedug, callBack) {
+        constructor(height, cursorBody, menuBody, callBack) {
             var _a;
             this._offsetY = 0;
             this._curentPosition = 0;
             this._callBack = () => null;
-            this._isDebug = false;
             this._height = height;
             this._callBack = callBack;
-            this._isDebug = isDedug;
             let menuItems = this.MapToMenuItems(Array.from(menuBody.children));
             this._paragraphs = this.MapToParagraphs(menuItems);
             this._menu = new DualSideScroll.Menu(cursorBody, menuBody, menuItems);
@@ -156,8 +154,11 @@ var DualSideScroll;
             };
         }
         ReinitHeight() {
+            var _a;
             this._height = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, document.body.offsetHeight, document.documentElement.offsetHeight, document.body.clientHeight, document.documentElement.clientHeight);
             this._paragraphs = this.MapToParagraphs(this._menu.Items);
+            this._menu.UpdateCursorPosition(this.Progress);
+            (_a = this._callBack) === null || _a === void 0 ? void 0 : _a.call(this, this.Progress);
         }
     }
     DualSideScroll.Page = Page;
@@ -165,11 +166,11 @@ var DualSideScroll;
 var DualSideScroll;
 (function (DualSideScroll) {
     class Init {
-        constructor(cursorSelector, menuSelector, isDebug, callBack) {
+        constructor(cursorSelector, menuSelector, callBack) {
             let height = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, document.body.offsetHeight, document.documentElement.offsetHeight, document.body.clientHeight, document.documentElement.clientHeight);
             let cursor = this.GetElementOrThrowError(cursorSelector);
             let menu = this.GetElementOrThrowError(menuSelector);
-            this._page = new DualSideScroll.Page(height, cursor, menu, isDebug, callBack);
+            this._page = new DualSideScroll.Page(height, cursor, menu, callBack);
         }
         GetElementOrThrowError(selector) {
             let element = document.querySelector(selector);

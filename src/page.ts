@@ -9,18 +9,15 @@ namespace DualSideScroll {
         private _paragraphs: Array<Paragraph>;
         private readonly _menu: Menu;
         private readonly _callBack?: ProgressHendler = () => null;
-        private readonly _isDebug?: boolean = false;
 
         constructor(
             height: number,
             cursorBody: HTMLDivElement,
             menuBody: HTMLElement,
-            isDedug?: boolean,
             callBack?: ProgressHendler,
         ) {
             this._height = height;
             this._callBack = callBack;
-            this._isDebug = isDedug;
 
             let menuItems = this.MapToMenuItems(Array.from(menuBody.children));
 
@@ -107,6 +104,8 @@ namespace DualSideScroll {
             );
 
             this._paragraphs = this.MapToParagraphs(this._menu.Items);
+            this._menu.UpdateCursorPosition(this.Progress);
+            this._callBack?.(this.Progress);
         }
     }
 }

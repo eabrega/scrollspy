@@ -6,7 +6,6 @@ namespace DualSideScroll {
         constructor(
             cursorSelector: string,
             menuSelector: string,
-            isDebug?: boolean,
             callBack?: ProgressHendler
         ) {
             let height = Math.max(
@@ -22,7 +21,6 @@ namespace DualSideScroll {
                 height,
                 cursor,
                 menu,
-                isDebug,
                 callBack,
             );
         }
