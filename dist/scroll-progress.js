@@ -1,6 +1,6 @@
 "use strict";
-var DualSideScroll;
-(function (DualSideScroll) {
+var ScrollProgress;
+(function (ScrollProgress) {
     class Cursor {
         constructor(cursorBody) {
             this._cursorBody = cursorBody;
@@ -12,10 +12,10 @@ var DualSideScroll;
             return this._cursorBody.getBoundingClientRect().height;
         }
     }
-    DualSideScroll.Cursor = Cursor;
-})(DualSideScroll || (DualSideScroll = {}));
-var DualSideScroll;
-(function (DualSideScroll) {
+    ScrollProgress.Cursor = Cursor;
+})(ScrollProgress || (ScrollProgress = {}));
+var ScrollProgress;
+(function (ScrollProgress) {
     class MenuItem {
         constructor(id, height) {
             this._id = id;
@@ -28,13 +28,13 @@ var DualSideScroll;
             return this._height;
         }
     }
-    DualSideScroll.MenuItem = MenuItem;
-})(DualSideScroll || (DualSideScroll = {}));
-var DualSideScroll;
-(function (DualSideScroll) {
+    ScrollProgress.MenuItem = MenuItem;
+})(ScrollProgress || (ScrollProgress = {}));
+var ScrollProgress;
+(function (ScrollProgress) {
     class Menu {
         constructor(cursorBody, menuBody, menuItems) {
-            this._cursor = new DualSideScroll.Cursor(cursorBody);
+            this._cursor = new ScrollProgress.Cursor(cursorBody);
             this._menuItems = menuItems;
             this._menuBody = menuBody;
         }
@@ -56,10 +56,10 @@ var DualSideScroll;
             return this._menuItems;
         }
     }
-    DualSideScroll.Menu = Menu;
-})(DualSideScroll || (DualSideScroll = {}));
-var DualSideScroll;
-(function (DualSideScroll) {
+    ScrollProgress.Menu = Menu;
+})(ScrollProgress || (ScrollProgress = {}));
+var ScrollProgress;
+(function (ScrollProgress) {
     class Paragraph {
         constructor(id, top, height, name) {
             this._id = id;
@@ -80,23 +80,26 @@ var DualSideScroll;
             return this._height;
         }
     }
-    DualSideScroll.Paragraph = Paragraph;
-})(DualSideScroll || (DualSideScroll = {}));
-var DualSideScroll;
-(function (DualSideScroll) {
+    ScrollProgress.Paragraph = Paragraph;
+})(ScrollProgress || (ScrollProgress = {}));
+var ScrollProgress;
+(function (ScrollProgress) {
     class Page {
-        constructor(height, cursorBody, menuBody, callBack) {
+        constructor(height, cursorBody, menuBody, onScrolled, onChanged) {
             var _a;
             this._offsetY = 0;
+            this._oldParagraph = null;
             this._curentPosition = 0;
-            this._callBack = () => null;
-            this._height = height;
-            this._callBack = callBack;
+            this._onScrolled = () => null;
+            this._onChanged = () => null;
             let menuItems = this.MapToMenuItems(Array.from(menuBody.children));
+            this._height = height;
+            this._onScrolled = onScrolled;
+            this._onChanged = onChanged;
             this._paragraphs = this.MapToParagraphs(menuItems);
-            this._menu = new DualSideScroll.Menu(cursorBody, menuBody, menuItems);
+            this._menu = new ScrollProgress.Menu(cursorBody, menuBody, menuItems);
             this._menu.UpdateCursorPosition(this.Progress);
-            (_a = this._callBack) === null || _a === void 0 ? void 0 : _a.call(this, this.Progress);
+            (_a = this._onScrolled) === null || _a === void 0 ? void 0 : _a.call(this, this.Progress);
             window.addEventListener('scroll', () => this.Scrolling());
             window.addEventListener('resize', () => this.ReinitHeight());
         }
@@ -112,7 +115,7 @@ var DualSideScroll;
                 let nextElementHeight = Math.round(((_b = (_a = array[index + 1]) === null || _a === void 0 ? void 0 : _a.getBoundingClientRect()) === null || _b === void 0 ? void 0 : _b.top) + window.pageYOffset - this._offsetY) - 3;
                 if (!nextElementHeight)
                     nextElementHeight = this._height;
-                return new DualSideScroll.Paragraph(element.getAttribute("id"), currentElementHeight, nextElementHeight - currentElementHeight, element.textContent);
+                return new ScrollProgress.Paragraph(element.getAttribute("id"), currentElementHeight, nextElementHeight - currentElementHeight, element.textContent);
             });
             return paragraphs;
         }
@@ -125,7 +128,7 @@ var DualSideScroll;
                 let id = (_a = element.getAttribute("href")) === null || _a === void 0 ? void 0 : _a.replace('#', '');
                 if (!id)
                     throw new Error(`Menu item '${(_b = element.textContent) === null || _b === void 0 ? void 0 : _b.trim()}' has not link to paragraph.`);
-                return new DualSideScroll.MenuItem(id, element.getBoundingClientRect().height);
+                return new ScrollProgress.MenuItem(id, element.getBoundingClientRect().height);
             });
             return menuItems;
         }
@@ -133,15 +136,20 @@ var DualSideScroll;
             var _a;
             this._curentPosition = window.pageYOffset;
             this._menu.UpdateCursorPosition(this.Progress);
-            (_a = this._callBack) === null || _a === void 0 ? void 0 : _a.call(this, this.Progress);
+            (_a = this._onScrolled) === null || _a === void 0 ? void 0 : _a.call(this, this.Progress);
         }
         get CurrentParagraph() {
-            let curentPart = this._paragraphs.find(paragraph => {
+            var _a, _b;
+            let curentParagraph = (_a = this._paragraphs.find(paragraph => {
                 if (this._curentPosition >= paragraph.Top &&
                     this._curentPosition <= paragraph.Top + paragraph.Height)
                     return paragraph;
-            });
-            return curentPart !== null && curentPart !== void 0 ? curentPart : this._paragraphs[0];
+            })) !== null && _a !== void 0 ? _a : this._paragraphs[0];
+            if (curentParagraph.Id != this._oldParagraph) {
+                (_b = this._onChanged) === null || _b === void 0 ? void 0 : _b.call(this, curentParagraph === null || curentParagraph === void 0 ? void 0 : curentParagraph.Id);
+                this._oldParagraph = curentParagraph.Id;
+            }
+            return curentParagraph;
         }
         get Progress() {
             let curentParagraph = this.CurrentParagraph;
@@ -156,19 +164,19 @@ var DualSideScroll;
             this._height = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, document.body.offsetHeight, document.documentElement.offsetHeight, document.body.clientHeight, document.documentElement.clientHeight);
             this._paragraphs = this.MapToParagraphs(this._menu.Items);
             this._menu.UpdateCursorPosition(this.Progress);
-            (_a = this._callBack) === null || _a === void 0 ? void 0 : _a.call(this, this.Progress);
+            (_a = this._onScrolled) === null || _a === void 0 ? void 0 : _a.call(this, this.Progress);
         }
     }
-    DualSideScroll.Page = Page;
-})(DualSideScroll || (DualSideScroll = {}));
-var DualSideScroll;
-(function (DualSideScroll) {
+    ScrollProgress.Page = Page;
+})(ScrollProgress || (ScrollProgress = {}));
+var ScrollProgress;
+(function (ScrollProgress) {
     class Init {
-        constructor(cursorSelector, menuSelector, callBack) {
+        constructor(cursorSelector, menuSelector, onScrolled, onChanged) {
             let height = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, document.body.offsetHeight, document.documentElement.offsetHeight, document.body.clientHeight, document.documentElement.clientHeight);
             let cursor = this.GetElementOrThrowError(cursorSelector);
             let menu = this.GetElementOrThrowError(menuSelector);
-            this._page = new DualSideScroll.Page(height, cursor, menu, callBack);
+            this._page = new ScrollProgress.Page(height, cursor, menu, onScrolled, onChanged);
         }
         GetElementOrThrowError(selector) {
             let element = document.querySelector(selector);
@@ -177,6 +185,6 @@ var DualSideScroll;
             return element;
         }
     }
-    DualSideScroll.Init = Init;
-})(DualSideScroll || (DualSideScroll = {}));
-//# sourceMappingURL=dual-side-scroll.js.map
+    ScrollProgress.Init = Init;
+})(ScrollProgress || (ScrollProgress = {}));
+//# sourceMappingURL=scroll-progress.js.map
