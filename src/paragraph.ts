@@ -1,4 +1,4 @@
-namespace DualSideScroll {
+namespace ScrollProgress {
     export class Paragraph {
         private readonly _id: string;
         private readonly _top: number;

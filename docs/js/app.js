@@ -2,12 +2,16 @@ document.addEventListener("DOMContentLoaded", function (event) {
     let currentParagraphName = document.getElementById('current-paragraph-name');
     let currentParagraphPercent = document.getElementById('current-paragraph-percent');
 
-    let scroll = new DualSideScroll.Init(
+    new ScrollProgress.Init(
         "#cursor",
         "menu",
-        x => {
-            currentParagraphName.innerText = document.getElementById(x.id).innerText;
-            currentParagraphPercent.innerText = x.percent  + '%';
+        progress => {
+            currentParagraphName.innerText = document.getElementById(progress.id).innerText;
+            currentParagraphPercent.innerText = progress.percent + '%';
+        },
+        id => {
+            document.querySelectorAll('a[href*="link"]').forEach(element => element.classList.remove('active-meny-item'));
+            document.querySelector(`[href="#${id}"]`).classList.add('active-meny-item');
         }
     );
 });

@@ -1,4 +1,4 @@
-namespace DualSideScroll {
+namespace ScrollProgress {
     export class Cursor {
         private readonly _cursorBody: HTMLDivElement;
         

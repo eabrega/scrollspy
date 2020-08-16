@@ -1,4 +1,4 @@
-namespace DualSideScroll {
+namespace ScrollProgress {
     export class MenuItem {
         private _id: string;
         private _height: number;

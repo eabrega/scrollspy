@@ -1,6 +1,6 @@
 ///<reference path="menuItem.ts"/>
 ///<reference path="cursor.ts"/>
-namespace DualSideScroll {
+namespace ScrollProgress {
     export interface INameValue {
         name: string;
         value: string;

@@ -1,12 +1,14 @@
 ///<reference path="page.ts"/>
-namespace DualSideScroll {
+namespace ScrollProgress {
     export type ProgressHendler = (progress: IProgress) => void;
+    export type StateHendler = (state: string) => void;
     export class Init {
         private readonly _page: Page;
         constructor(
             cursorSelector: string,
             menuSelector: string,
-            callBack?: ProgressHendler
+            onScrolled?: ProgressHendler,
+            onChanged?: StateHendler
         ) {
             let height = Math.max(
                 document.body.scrollHeight, document.documentElement.scrollHeight,
@@ -21,7 +23,8 @@ namespace DualSideScroll {
                 height,
                 cursor,
                 menu,
-                callBack,
+                onScrolled,
+                onChanged
             );
         }
 
