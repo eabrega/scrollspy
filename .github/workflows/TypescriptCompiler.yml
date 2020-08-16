@@ -13,4 +13,4 @@ jobs:
     - name: npm install
       run: npm install
     - name: tsc
-      run: /home/runner/work/dual-side-scroll/dual-side-scroll/node_modules/typescript/bin/tsc -p ./src/tsconfig.json
+      run: /home/runner/work/scroll-progress/scroll-progress/node_modules/typescript/bin/tsc -p ./src/tsconfig.json
