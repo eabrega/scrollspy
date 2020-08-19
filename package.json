@@ -1,6 +1,32 @@
 {
-    "devDependencies": {
-        "typescript": "3.9.7"
+    "name": "dual-side-scroll",
+    "version": "1.1.4",
+    "main": "dist/scroll-progress.min.js",
+    "files": [
+        "dist/*"
+    ],
+    "description": "It's a tiny freeware library on TypeScript to sinhronize page scrolling and navigation meny-bar.",
+    "author": {
+        "name": "Evgeny Brega",
+        "email": "eabrega@gmail.com",
+        "url": "https://github.com/eabrega/"
     },
-    "dependencies": {}
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/eabrega/scroll-progress.git"
+    },
+    "homepage": "https://eabrega.github.io/scroll-progress/",
+    "keywords": [
+        "scroll progress", 
+        "scroll", 
+        "scroll-progress",
+        "dual-side scroll",
+        "javascript", 
+        "typescript", 
+        "library", 
+        "scrolling", 
+        "html5", 
+        "web"
+    ]
 }
