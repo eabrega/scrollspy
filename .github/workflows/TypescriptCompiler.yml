@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: npm install
-      run: npm install
+    - name: npm install typescript
+      run: npm install typescript
     - name: tsc
       run: /home/runner/work/scroll-progress/scroll-progress/node_modules/typescript/bin/tsc -p ./src/tsconfig.json
