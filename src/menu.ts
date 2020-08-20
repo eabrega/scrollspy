@@ -1,25 +1,26 @@
 ///<reference path="menuItem.ts"/>
 ///<reference path="cursor.ts"/>
 namespace ScrollProgress {
-    export interface INameValue {
-        name: string;
-        value: string;
-    }
     export interface IProgress {
         id: string;
         percent: number;
     }
     export class Menu {
-        private readonly _menuBody: HTMLElement;
-        private readonly _menuItems: Array<MenuItem>;
+        private readonly _menuHtmlElements: Array<Element>;
+        private _menuItems: Array<MenuItem>;
         private readonly _cursor: Cursor;
 
-        constructor(cursorBody: HTMLDivElement, menuBody: HTMLElement, menuItems: Array<MenuItem>) {
+        constructor(cursorBody: HTMLDivElement, elements: Array<Element>) {
+            this._menuHtmlElements = elements;
             this._cursor = new Cursor(cursorBody);
-            this._menuItems = menuItems;
-            this._menuBody = menuBody;
+            this._menuItems = this.MapToMenuItems(elements);
         }
-        public UpdateCursorPosition(progress: IProgress) {
+
+        public get Items(): Array<MenuItem> {
+            return this._menuItems;
+        }
+
+        public UpdateCursorPosition(progress: IProgress): void {
             let indexParagraph = this._menuItems.findIndex(i => i.Id == progress.id)
             let height = this._menuItems
                 .filter((item, index) => {
@@ -35,8 +36,23 @@ namespace ScrollProgress {
             this._cursor.Move(curentCursorPosition);
         }
 
-        public get Items(): Array<MenuItem> {
-            return this._menuItems;
+        public ReInit(): void {
+            this._menuItems = this.MapToMenuItems(this._menuHtmlElements);
+        }
+
+        private MapToMenuItems(Elements: Array<Element>): Array<MenuItem> {
+            if (Elements.length < 1) throw new Error('Menu can not be empty!');
+            let menuItems = Elements
+                .map(element => {
+                    let id = element.getAttribute("href")?.replace('#', '') as string;
+                    if (!id) throw new Error(`Menu item '${element.textContent?.trim()}' has not link to paragraph.`);
+
+                    return new MenuItem(
+                        id,
+                        element.getBoundingClientRect().height
+                    )
+                });
+            return menuItems;
         }
     }
 }

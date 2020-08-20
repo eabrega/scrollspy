@@ -19,22 +19,20 @@ namespace ScrollProgress {
             onScrolled?: ProgressHendler,
             onChanged?: StateHendler
         ) {
-            let menuItems = this.MapToMenuItems(Array.from(menuBody.children));
-
             this._height = height;
             this._onScrolled = onScrolled;
             this._onChanged = onChanged;
-            this._paragraphs = this.MapToParagraphs(menuItems);
             this._menu = new Menu(
                 cursorBody,
-                menuBody,
-                menuItems
+                Array.from(menuBody.children)
             );
+            this._paragraphs = this.MapToParagraphs(this._menu.Items);
+
             this._menu.UpdateCursorPosition(this.Progress);
             this._onScrolled?.(this.Progress);
 
             window.addEventListener('scroll', () => this.Scrolling());
-            window.addEventListener('resize', () => this.ReinitHeight());
+            window.addEventListener('resize', () => this.ReInit());
         }
 
         private MapToParagraphs(menyItems: Array<MenuItem>): Array<Paragraph> {
@@ -57,21 +55,6 @@ namespace ScrollProgress {
                     );
                 });
             return paragraphs;
-        }
-
-        private MapToMenuItems(Elements: Array<Element>): Array<MenuItem> {
-            if (Elements.length < 1) throw new Error('Menu can not be empty!');
-            let menuItems = Elements
-                .map(element => {
-                    let id = element.getAttribute("href")?.replace('#', '') as string;
-                    if (!id) throw new Error(`Menu item '${element.textContent?.trim()}' has not link to paragraph.`);
-
-                    return new MenuItem(
-                        id,
-                        element.getBoundingClientRect().height
-                    )
-                });
-            return menuItems;
         }
 
         private Scrolling() {
@@ -103,7 +86,7 @@ namespace ScrollProgress {
             }
         }
 
-        private ReinitHeight() {
+        private ReInit() {
             this._height = Math.max(
                 document.body.scrollHeight, document.documentElement.scrollHeight,
                 document.body.offsetHeight, document.documentElement.offsetHeight,
@@ -111,6 +94,7 @@ namespace ScrollProgress {
             );
 
             this._paragraphs = this.MapToParagraphs(this._menu.Items);
+            this._menu.ReInit();
             this._menu.UpdateCursorPosition(this.Progress);
             this._onScrolled?.(this.Progress);
         }
