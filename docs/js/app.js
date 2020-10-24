@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
         "#cursor",
         "menu",
         progress => {
-            console.log(progress);
             currentParagraphName.innerText = document.getElementById(progress.Id).innerText;
             currentParagraphPercent.innerText = progress.Percent + '%';
         },
