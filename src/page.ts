@@ -3,6 +3,7 @@
 ///<reference path="menuItem.ts"/>
 namespace ScrollProgress {
     export class Page {
+        private _timeOut: number = 0;
         private _height: number;
         private readonly _offsetY: number = 0;
         private _oldParagraph: string | null = null;
@@ -14,25 +15,30 @@ namespace ScrollProgress {
 
         constructor(
             height: number,
-            cursorBody: HTMLDivElement,
             menuBody: HTMLElement,
+            cursorBody?: HTMLDivElement | null,
             onScrolled?: ProgressHendler,
             onChanged?: StateHendler
         ) {
             this._height = height;
             this._onScrolled = onScrolled;
             this._onChanged = onChanged;
+
+            this.ConfirmMenyIsNotNull(menuBody);
+
             this._menu = new Menu(
-                cursorBody,
-                Array.from(menuBody.children)
+                Array.from(menuBody.children),
+                cursorBody
             );
             this._paragraphs = this.MapToParagraphs(this._menu.Items);
+
+            this.CheckParagraphLinks(this._paragraphs, this._menu.Items);
 
             this._menu.UpdateCursorPosition(this.Progress);
             this._onScrolled?.(this.Progress);
 
             window.addEventListener('scroll', () => this.Scrolling());
-            window.addEventListener('resize', () => this.ReInit());
+            window.addEventListener('resize', () => this.ReInitRunnwer());
         }
 
         private MapToParagraphs(menyItems: Array<MenuItem>): Array<Paragraph> {
@@ -40,8 +46,7 @@ namespace ScrollProgress {
                 .map(link => `#${link.Id}`)
                 .join(', ');
 
-            let paragraphs = Array
-                .from(document.querySelectorAll(queryString))
+            let paragraphs = Array.from(document.querySelectorAll(queryString))
                 .map((element, index, array) => {
                     let currentElementHeight = Math.round(element.getBoundingClientRect().top + window.pageYOffset - this._offsetY) - 3;
                     let nextElementHeight = Math.round(array[index + 1]?.getBoundingClientRect()?.top + window.pageYOffset - this._offsetY) - 3;
@@ -54,6 +59,7 @@ namespace ScrollProgress {
                         element.textContent
                     );
                 });
+
             return paragraphs;
         }
 
@@ -80,13 +86,38 @@ namespace ScrollProgress {
         private get Progress(): IProgress {
             let curentParagraph = this.CurrentParagraph;
             let progress = Math.round(((this._curentPosition - curentParagraph.Top) / curentParagraph.Height) * 100);
+
             return <IProgress>{
-                id: curentParagraph.Id,
-                percent: progress
+                Id: curentParagraph.Id,
+                Percent: progress > 0 ? progress : 0
             }
         }
 
-        private ReInit() {
+        private ReInitRunnwer() {
+            clearTimeout(this._timeOut);
+            this._timeOut = setTimeout(()=> this.ReInit(), 200);
+
+        }
+
+        private ConfirmMenyIsNotNull(menuBody: HTMLElement) {
+            if (menuBody == null) throw new Error("Menu body can't be NULL");
+        }
+        /**
+         * Проверяет соответствие ссылок на параграфы. В случае несоответсвия - кидает исключение.
+         * @param paragraphs Array paragraphs
+         * @param menuItems Array MenuItems
+         */
+        private CheckParagraphLinks(paragraphs: Array<Paragraph>, menuItems: Array<MenuItem>): void {
+            menuItems.every((par) => {
+                let paragraph = paragraphs.find(x => x.Id == par.Id);
+
+                if (paragraph) return true;
+
+                throw new Error(`Menu item with id '${par.Id}' not linked for paragraph!`);
+            });
+        }
+
+        private ReInit(): void {
             this._height = Math.max(
                 document.body.scrollHeight, document.documentElement.scrollHeight,
                 document.body.offsetHeight, document.documentElement.offsetHeight,

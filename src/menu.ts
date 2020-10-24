@@ -1,18 +1,23 @@
 ///<reference path="menuItem.ts"/>
 ///<reference path="cursor.ts"/>
 namespace ScrollProgress {
+    /**
+     * Текущий прогресс прокрутки
+     * @param Id id текущего параграфа
+     * @param Percent состояние прокрутки в % текущего параграфа
+     */
     export interface IProgress {
-        id: string;
-        percent: number;
+        Id: string;
+        Percent: number;
     }
     export class Menu {
         private readonly _menuHtmlElements: Array<Element>;
         private _menuItems: Array<MenuItem>;
-        private readonly _cursor: Cursor;
+        private readonly _cursor: Cursor | null = null;
 
-        constructor(cursorBody: HTMLDivElement, elements: Array<Element>) {
+        constructor(elements: Array<Element>, cursorBody?: HTMLDivElement | null) {
             this._menuHtmlElements = elements;
-            this._cursor = new Cursor(cursorBody);
+            if (cursorBody != null) this._cursor = new Cursor(cursorBody);
             this._menuItems = this.MapToMenuItems(elements);
         }
 
@@ -21,7 +26,9 @@ namespace ScrollProgress {
         }
 
         public UpdateCursorPosition(progress: IProgress): void {
-            let indexParagraph = this._menuItems.findIndex(i => i.Id == progress.id)
+            if (this._cursor == null) return;
+
+            let indexParagraph = this._menuItems.findIndex(i => i.Id == progress.Id)
             let height = this._menuItems
                 .filter((item, index) => {
                     if (index < indexParagraph + 1) {
@@ -31,9 +38,9 @@ namespace ScrollProgress {
                 .map((item) => item.Height)
                 .reduce((sum, curent) => sum + curent);
             let currentItemHeight = this._menuItems[indexParagraph].Height
-            let curentCursorPosition = (height - currentItemHeight + this._cursor.Height) + (currentItemHeight * progress.percent / 100);
+            let curentCursorPosition = (height - currentItemHeight + (this?._cursor?.Height ?? 0)) + (currentItemHeight * progress.Percent / 100);
 
-            this._cursor.Move(curentCursorPosition);
+            this?._cursor?.Move(curentCursorPosition);
         }
 
         public ReInit(): void {

@@ -6,8 +6,9 @@ document.addEventListener("DOMContentLoaded", function (event) {
         "#cursor",
         "menu",
         progress => {
-            currentParagraphName.innerText = document.getElementById(progress.id).innerText;
-            currentParagraphPercent.innerText = progress.percent + '%';
+            console.log(progress);
+            currentParagraphName.innerText = document.getElementById(progress.Id).innerText;
+            currentParagraphPercent.innerText = progress.Percent + '%';
         },
         id => {
             document.querySelectorAll('a[href*="link"]').forEach(element => element.classList.remove('active-meny-item'));

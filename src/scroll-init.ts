@@ -2,6 +2,7 @@
 namespace ScrollProgress {
     export type ProgressHendler = (progress: IProgress) => void;
     export type StateHendler = (state: string) => void;
+
     export class Init {
         private readonly _page: Page;
         constructor(
@@ -21,14 +22,16 @@ namespace ScrollProgress {
 
             this._page = new Page(
                 height,
-                cursor,
                 menu,
+                cursor,
                 onScrolled,
                 onChanged
             );
         }
 
-        private GetElementOrThrowError(selector: string): Element {
+        private GetElementOrThrowError(selector: string | null): Element | null {
+            if (selector == null) return null;
+
             let element = document.querySelector(selector);
 
             if (!element) throw new Error(`Element with selector '${selector}' not found!`);

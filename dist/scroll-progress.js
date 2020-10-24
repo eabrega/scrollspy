@@ -5,8 +5,8 @@ var ScrollProgress;
         constructor(cursorBody) {
             this._cursorBody = cursorBody;
         }
-        Move(topPosition) {
-            this._cursorBody.style.top = `${topPosition}px`;
+        Move(YPosition) {
+            this._cursorBody.style.top = `${YPosition}px`;
         }
         get Height() {
             return this._cursorBody.getBoundingClientRect().height;
@@ -33,16 +33,21 @@ var ScrollProgress;
 var ScrollProgress;
 (function (ScrollProgress) {
     class Menu {
-        constructor(cursorBody, elements) {
+        constructor(elements, cursorBody) {
+            this._cursor = null;
             this._menuHtmlElements = elements;
-            this._cursor = new ScrollProgress.Cursor(cursorBody);
+            if (cursorBody != null)
+                this._cursor = new ScrollProgress.Cursor(cursorBody);
             this._menuItems = this.MapToMenuItems(elements);
         }
         get Items() {
             return this._menuItems;
         }
         UpdateCursorPosition(progress) {
-            let indexParagraph = this._menuItems.findIndex(i => i.Id == progress.id);
+            var _a, _b, _c;
+            if (this._cursor == null)
+                return;
+            let indexParagraph = this._menuItems.findIndex(i => i.Id == progress.Id);
             let height = this._menuItems
                 .filter((item, index) => {
                 if (index < indexParagraph + 1) {
@@ -52,8 +57,8 @@ var ScrollProgress;
                 .map((item) => item.Height)
                 .reduce((sum, curent) => sum + curent);
             let currentItemHeight = this._menuItems[indexParagraph].Height;
-            let curentCursorPosition = (height - currentItemHeight + this._cursor.Height) + (currentItemHeight * progress.percent / 100);
-            this._cursor.Move(curentCursorPosition);
+            let curentCursorPosition = (height - currentItemHeight + ((_b = (_a = this === null || this === void 0 ? void 0 : this._cursor) === null || _a === void 0 ? void 0 : _a.Height) !== null && _b !== void 0 ? _b : 0)) + (currentItemHeight * progress.Percent / 100);
+            (_c = this === null || this === void 0 ? void 0 : this._cursor) === null || _c === void 0 ? void 0 : _c.Move(curentCursorPosition);
         }
         ReInit() {
             this._menuItems = this.MapToMenuItems(this._menuHtmlElements);
@@ -101,8 +106,9 @@ var ScrollProgress;
 var ScrollProgress;
 (function (ScrollProgress) {
     class Page {
-        constructor(height, cursorBody, menuBody, onScrolled, onChanged) {
+        constructor(height, menuBody, cursorBody, onScrolled, onChanged) {
             var _a;
+            this._timeOut = 0;
             this._offsetY = 0;
             this._oldParagraph = null;
             this._curentPosition = 0;
@@ -111,19 +117,20 @@ var ScrollProgress;
             this._height = height;
             this._onScrolled = onScrolled;
             this._onChanged = onChanged;
-            this._menu = new ScrollProgress.Menu(cursorBody, Array.from(menuBody.children));
+            this.ConfirmMenyIsNotNull(menuBody);
+            this._menu = new ScrollProgress.Menu(Array.from(menuBody.children), cursorBody);
             this._paragraphs = this.MapToParagraphs(this._menu.Items);
+            this.CheckParagraphLinks(this._paragraphs, this._menu.Items);
             this._menu.UpdateCursorPosition(this.Progress);
             (_a = this._onScrolled) === null || _a === void 0 ? void 0 : _a.call(this, this.Progress);
             window.addEventListener('scroll', () => this.Scrolling());
-            window.addEventListener('resize', () => this.ReInit());
+            window.addEventListener('resize', () => this.ReInitRunnwer());
         }
         MapToParagraphs(menyItems) {
             let queryString = menyItems
                 .map(link => `#${link.Id}`)
                 .join(', ');
-            let paragraphs = Array
-                .from(document.querySelectorAll(queryString))
+            let paragraphs = Array.from(document.querySelectorAll(queryString))
                 .map((element, index, array) => {
                 var _a, _b;
                 let currentElementHeight = Math.round(element.getBoundingClientRect().top + window.pageYOffset - this._offsetY) - 3;
@@ -157,9 +164,25 @@ var ScrollProgress;
             let curentParagraph = this.CurrentParagraph;
             let progress = Math.round(((this._curentPosition - curentParagraph.Top) / curentParagraph.Height) * 100);
             return {
-                id: curentParagraph.Id,
-                percent: progress
+                Id: curentParagraph.Id,
+                Percent: progress > 0 ? progress : 0
             };
+        }
+        ReInitRunnwer() {
+            clearTimeout(this._timeOut);
+            this._timeOut = setTimeout(() => this.ReInit(), 200);
+        }
+        ConfirmMenyIsNotNull(menuBody) {
+            if (menuBody == null)
+                throw new Error("Menu body can't be NULL");
+        }
+        CheckParagraphLinks(paragraphs, menuItems) {
+            menuItems.every((par) => {
+                let paragraph = paragraphs.find(x => x.Id == par.Id);
+                if (paragraph)
+                    return true;
+                throw new Error(`Menu item with id '${par.Id}' not linked for paragraph!`);
+            });
         }
         ReInit() {
             var _a;
@@ -179,9 +202,11 @@ var ScrollProgress;
             let height = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, document.body.offsetHeight, document.documentElement.offsetHeight, document.body.clientHeight, document.documentElement.clientHeight);
             let cursor = this.GetElementOrThrowError(cursorSelector);
             let menu = this.GetElementOrThrowError(menuSelector);
-            this._page = new ScrollProgress.Page(height, cursor, menu, onScrolled, onChanged);
+            this._page = new ScrollProgress.Page(height, menu, cursor, onScrolled, onChanged);
         }
         GetElementOrThrowError(selector) {
+            if (selector == null)
+                return null;
             let element = document.querySelector(selector);
             if (!element)
                 throw new Error(`Element with selector '${selector}' not found!`);

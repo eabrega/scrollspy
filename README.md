@@ -1,50 +1,48 @@
-# Scroll progress (dual-side-scroll) v1.1.6
-## Назначение
-Этот крошечный плагин предназначен для отображения прогресса прокрутки страницы в интерактивном режиме.
-Предусмотренно два типа события `onScrolled` и `onChanged`. Они могут использоваться как совместно, так и по отдельности.
+# Scroll progress (dual-side-scroll) v1.2.0
+## Assignment
+This tiny plugin is designed to show the progress of the page scrolling interactively. There are two types of actions: `onScrolled` and `onChanged`. 
+They can be used together or separately.
 
-- `onScrolled` - возвращет объект `progress` на каждое событие прокрутки. Его удобно использовать тогда, когда вам необходимо отображать прогресс в реальном времени
-- `onChanged` - срабатывает только при смене одного параграфа на другой. Это полезно для переключения активного пункта меню в блоке навигации.
-
+- `onScrolled` - returns to the progress for each scroll event. It is convenient to use when you need to display progress in real time.
+- `onChanged` - works only when one paragraph is replaced to another. This is useful for switching the active menu item in the navigation block.
 
 [LiveDemo](https://eabrega.github.io/scroll-progress)
 
-## Как это работает
-Все что нужно - это наличие навигационного меню с установленными ссылками на соотвествующие параграфы в тексте.
-При инициализации объекта нужно указать селекторы курсора и меню, а так же функцию обратного вызова. 
+## How does it work?
+All you need is a navigation menu with links to the relevant paragraphs in the text. When initializing an object, you need to specify cursor and menu selectors, as well as a callback function.
 
-При возникновении события `onScrolled` в обработчик будет передан объект:
+When the `onScrolled` event is used, an object will be sent to the processing unit:
 ```typescript
     Progress {
-        // id текущего параграфа
-        id: string;
-        // процент на который он был просмотрен
-        percent: number;
+        // id of current paragraph
+        Id: string;
+        // % of paragraph being reviewed
+        Percent: number;
     }
 ```
-При возникновении события `onChanged` в обработчик будет передан id текущего параграфа.
+When the `onChanged` event is used, the id of the current paragraph will be sent to the processing unit.
 
-При изменении размера окна скрипт атоматически пересчитает пропорциональные значения. Это бывает нужно в мобильной версии. При повороте экрана устройства прокрутка продолжит работать корректно.
+When the window is changed in size, the script automatically will be adjuscted to the proportional value. This is sometimes needed in the mobile version. When the device screen is rotated, the scrolling will continue to work correctly.
 
 
-## Установка
+
+## Installation
 
 ```
 npm i dual-side-scroll
 ```
 
-Возьмите из `dist` минифицированную версию скрипта и поместите ее в каталог с вашим приложением. 
-Позаботьтесь о том, чтобы строка подключения плагина была расположенна выше строки подключения ваших скриптов.
+Take the minified version of the script from `dist` and place it in your application directory. Make sure the plugin connection string is located above the connection string of your scripts.
 
 ```html 
 <script src="./<your_js_directory>/scroll-progress.min.js"></script>
 ```
 
-В отладочных целях присутствует неминифицированная версия с sourcemap.
+For debugging purposes, there is an unminified version with sourcemap.
 
-## Пример
+## Example
 
-Исходный код скрипта [LiveDemo](https://eabrega.github.io/scroll-progress) страницы.
+The source code of the page [LiveDemo](https://eabrega.github.io/scroll-progress) script.
 ```javascript
 document.addEventListener("DOMContentLoaded", function (event) {
     let currentParagraphName = document.getElementById('current-paragraph-name');
@@ -54,8 +52,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
         "#cursor",
         "menu",
         progress => {
-            currentParagraphName.innerText = document.getElementById(progress.id).innerText;
-            currentParagraphPercent.innerText = progress.percent + '%';
+            currentParagraphName.innerText = document.getElementById(progress.Id).innerText;
+            currentParagraphPercent.innerText = progress.Percent + '%';
         },
         id => {
             document.querySelectorAll('a[href*="link"]')
@@ -69,8 +67,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
 });
 ```
 
-## Планируемые обновления
-
-* Интерактивный курсор с помощью которого можно прокручивать страницу
-* Публикация npm-package;
-* Закладки в параграфах
+## Planned updates
+* Interactive cursor to scroll the page
+* Bookmarks in paragraphs
