@@ -11,11 +11,15 @@ namespace ScrollProgress {
         Percent: number;
     }
     export class Menu {
-        private readonly _menuHtmlElements: Array<Element>;
+        private readonly _menuHtmlElements: HTMLCollection;
+        private readonly _menuBody: HTMLElement;
         private _menuItems: Array<MenuItem>;
         private readonly _cursor: Cursor | null = null;
 
-        constructor(elements: Array<Element>, cursorBody?: HTMLDivElement | null) {
+        constructor(menuBody: HTMLElement, elements: HTMLCollection, cursorBody?: HTMLDivElement | null) {
+            if (elements.length < 1) throw new Error('Menu can not be empty!');
+
+            this._menuBody = menuBody;
             this._menuHtmlElements = elements;
             if (cursorBody != null) this._cursor = new Cursor(cursorBody);
             this._menuItems = this.MapToMenuItems(elements);
@@ -27,7 +31,6 @@ namespace ScrollProgress {
 
         public UpdateCursorPosition(progress: IProgress): void {
             if (this._cursor == null) return;
-
             let indexParagraph = this._menuItems.findIndex(i => i.Id == progress.Id)
             let height = this._menuItems
                 .filter((item, index) => {
@@ -47,16 +50,18 @@ namespace ScrollProgress {
             this._menuItems = this.MapToMenuItems(this._menuHtmlElements);
         }
 
-        private MapToMenuItems(Elements: Array<Element>): Array<MenuItem> {
-            if (Elements.length < 1) throw new Error('Menu can not be empty!');
-            let menuItems = Elements
-                .map(element => {
+        private MapToMenuItems(elements: HTMLCollection): Array<MenuItem> {
+            let menuItems = Array.from(elements)
+                .map((element, index) => {
                     let id = element.getAttribute("href")?.replace('#', '') as string;
-                    if (!id) throw new Error(`Menu item '${element.textContent?.trim()}' has not link to paragraph.`);
 
+                    let currentElementHeight = Math.round(element.getBoundingClientRect().top);
+                    let nextElementHeight = Math.round(elements[index + 1]?.getBoundingClientRect()?.top);
+                    if (!nextElementHeight) nextElementHeight = this._menuBody.getBoundingClientRect().height + this._menuBody.getBoundingClientRect().top;
+        
                     return new MenuItem(
                         id,
-                        element.getBoundingClientRect().height
+                        nextElementHeight - currentElementHeight,
                     )
                 });
             return menuItems;
