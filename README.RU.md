@@ -62,8 +62,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 .forEach(element => 
                     element.classList.remove('active-meny-item')
                 );
-            document.querySelector(`[href="#${id}"]`)
-                .classList.add('active-meny-item');
+            document.querySelector(`[href="#${id}"]`).classList
+                .add('active-meny-item');
         }
     );
 });
