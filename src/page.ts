@@ -5,7 +5,6 @@ namespace ScrollProgress {
     export class Page {
         private _timeOut: number = 0;
         private _height: number;
-        private readonly _offsetY: number = 0;
         private _oldParagraph: string | null = null;
         private _curentPosition: number = 0;
         private _paragraphs: Array<Paragraph>;
@@ -23,11 +22,10 @@ namespace ScrollProgress {
             this._height = height;
             this._onScrolled = onScrolled;
             this._onChanged = onChanged;
-
             this.ConfirmMenyIsNotNull(menuBody);
-
             this._menu = new Menu(
-                Array.from(menuBody.children),
+                menuBody,
+                menuBody.getElementsByTagName('a') as HTMLCollection,
                 cursorBody
             );
             this._paragraphs = this.MapToParagraphs(this._menu.Items);
@@ -48,8 +46,8 @@ namespace ScrollProgress {
 
             let paragraphs = Array.from(document.querySelectorAll(queryString))
                 .map((element, index, array) => {
-                    let currentElementHeight = Math.round(element.getBoundingClientRect().top + window.pageYOffset - this._offsetY) - 3;
-                    let nextElementHeight = Math.round(array[index + 1]?.getBoundingClientRect()?.top + window.pageYOffset - this._offsetY) - 3;
+                    let currentElementHeight = Math.round(element.getBoundingClientRect().top + window.pageYOffset);
+                    let nextElementHeight = Math.round(array[index + 1]?.getBoundingClientRect()?.top + window.pageYOffset);
                     if (!nextElementHeight) nextElementHeight = this._height;
 
                     return new Paragraph(
@@ -95,13 +93,13 @@ namespace ScrollProgress {
 
         private ReInitRunnwer() {
             clearTimeout(this._timeOut);
-            this._timeOut = setTimeout(()=> this.ReInit(), 200);
-
+            this._timeOut = setTimeout(() => this.ReInit(), 200);
         }
 
-        private ConfirmMenyIsNotNull(menuBody: HTMLElement) {
-            if (menuBody == null) throw new Error("Menu body can't be NULL");
+        private ConfirmMenyIsNotNull(menuChildrens: HTMLElement) {
+            if (menuChildrens == null) throw new Error("Menu body can't be NULL");
         }
+
         /**
          * Проверяет соответствие ссылок на параграфы. В случае несоответсвия - кидает исключение.
          * @param paragraphs Array paragraphs
@@ -112,8 +110,7 @@ namespace ScrollProgress {
                 let paragraph = paragraphs.find(x => x.Id == par.Id);
 
                 if (paragraph) return true;
-
-                throw new Error(`Menu item with id '${par.Id}' not linked for paragraph!`);
+                else throw new Error(`Menu item with id '${par.Id}' not linked for paragraph!`);
             });
         }
 

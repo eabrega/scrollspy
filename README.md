@@ -1,4 +1,10 @@
-# Scroll progress (dual-side-scroll) v1.2.0
+# Scroll progress (dual-side-scroll) v1.2.1
+[![npm](https://img.shields.io/npm/v/dual-side-scroll?color=green)](https://www.npmjs.com/package/dual-side-scroll)
+![npm](https://img.shields.io/npm/dy/dual-side-scroll)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/dual-side-scroll)
+[![GitHub license](https://img.shields.io/github/license/jerosoler/Drawflow)](https://github.com/jerosoler/Drawflow/blob/master/LICENSE)
+
+
 ## Assignment
 This tiny plugin is designed to show the progress of the page scrolling interactively. There are two types of actions: `onScrolled` and `onChanged`. 
 They can be used together or separately.
@@ -24,8 +30,6 @@ When the `onChanged` event is used, the id of the current paragraph will be sent
 
 When the window is changed in size, the script automatically will be adjuscted to the proportional value. This is sometimes needed in the mobile version. When the device screen is rotated, the scrolling will continue to work correctly.
 
-
-
 ## Installation
 
 ```
@@ -48,22 +52,21 @@ document.addEventListener("DOMContentLoaded", function (event) {
     let currentParagraphName = document.getElementById('current-paragraph-name');
     let currentParagraphPercent = document.getElementById('current-paragraph-percent');
 
-    new ScrollProgress.Init(
-        "#cursor",
-        "menu",
-        progress => {
+    var options = {
+        CursorSelector: "#cursor",
+        MenuSelector: "menu",       // require
+        OnScrolled: progress=>{
             currentParagraphName.innerText = document.getElementById(progress.Id).innerText;
             currentParagraphPercent.innerText = progress.Percent + '%';
         },
-        id => {
+        OnChanged: id=>{
             document.querySelectorAll('a[href*="link"]')
-                .forEach(element => 
-                    element.classList.remove('active-meny-item')
-                );
-            document.querySelector(`[href="#${id}"]`)
-                .classList.add('active-meny-item');
-        }
-    );
+                .forEach(element => element.classList.remove('active-meny-item'));
+            document.querySelector(`[href="#${id}"]`).classList.add('active-meny-item');
+        },
+    };
+
+    new ScrollProgress.Init(options);
 });
 ```
 

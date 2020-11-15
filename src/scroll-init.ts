@@ -18,7 +18,7 @@ namespace ScrollProgress {
             );
 
             let cursor = this.GetElementOrThrowError(cursorSelector) as HTMLDivElement;
-            let menu = this.GetElementOrThrowError(menuSelector) as HTMLUListElement;
+            let menu = this.GetElementOrThrowError(menuSelector) as HTMLElement;
 
             this._page = new Page(
                 height,
@@ -33,9 +33,7 @@ namespace ScrollProgress {
             if (selector == null) return null;
 
             let element = document.querySelector(selector);
-
             if (!element) throw new Error(`Element with selector '${selector}' not found!`);
-
             return element;
         }
     }

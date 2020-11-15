@@ -33,8 +33,11 @@ var ScrollProgress;
 var ScrollProgress;
 (function (ScrollProgress) {
     class Menu {
-        constructor(elements, cursorBody) {
+        constructor(menuBody, elements, cursorBody) {
             this._cursor = null;
+            if (elements.length < 1)
+                throw new Error('Menu can not be empty!');
+            this._menuBody = menuBody;
             this._menuHtmlElements = elements;
             if (cursorBody != null)
                 this._cursor = new ScrollProgress.Cursor(cursorBody);
@@ -63,16 +66,16 @@ var ScrollProgress;
         ReInit() {
             this._menuItems = this.MapToMenuItems(this._menuHtmlElements);
         }
-        MapToMenuItems(Elements) {
-            if (Elements.length < 1)
-                throw new Error('Menu can not be empty!');
-            let menuItems = Elements
-                .map(element => {
-                var _a, _b;
+        MapToMenuItems(elements) {
+            let menuItems = Array.from(elements)
+                .map((element, index) => {
+                var _a, _b, _c;
                 let id = (_a = element.getAttribute("href")) === null || _a === void 0 ? void 0 : _a.replace('#', '');
-                if (!id)
-                    throw new Error(`Menu item '${(_b = element.textContent) === null || _b === void 0 ? void 0 : _b.trim()}' has not link to paragraph.`);
-                return new ScrollProgress.MenuItem(id, element.getBoundingClientRect().height);
+                let currentElementHeight = Math.round(element.getBoundingClientRect().top);
+                let nextElementHeight = Math.round((_c = (_b = elements[index + 1]) === null || _b === void 0 ? void 0 : _b.getBoundingClientRect()) === null || _c === void 0 ? void 0 : _c.top);
+                if (!nextElementHeight)
+                    nextElementHeight = this._menuBody.getBoundingClientRect().height + this._menuBody.getBoundingClientRect().top;
+                return new ScrollProgress.MenuItem(id, nextElementHeight - currentElementHeight);
             });
             return menuItems;
         }
@@ -109,7 +112,6 @@ var ScrollProgress;
         constructor(height, menuBody, cursorBody, onScrolled, onChanged) {
             var _a;
             this._timeOut = 0;
-            this._offsetY = 0;
             this._oldParagraph = null;
             this._curentPosition = 0;
             this._onScrolled = () => null;
@@ -118,7 +120,7 @@ var ScrollProgress;
             this._onScrolled = onScrolled;
             this._onChanged = onChanged;
             this.ConfirmMenyIsNotNull(menuBody);
-            this._menu = new ScrollProgress.Menu(Array.from(menuBody.children), cursorBody);
+            this._menu = new ScrollProgress.Menu(menuBody, menuBody.getElementsByTagName('a'), cursorBody);
             this._paragraphs = this.MapToParagraphs(this._menu.Items);
             this.CheckParagraphLinks(this._paragraphs, this._menu.Items);
             this._menu.UpdateCursorPosition(this.Progress);
@@ -133,8 +135,8 @@ var ScrollProgress;
             let paragraphs = Array.from(document.querySelectorAll(queryString))
                 .map((element, index, array) => {
                 var _a, _b;
-                let currentElementHeight = Math.round(element.getBoundingClientRect().top + window.pageYOffset - this._offsetY) - 3;
-                let nextElementHeight = Math.round(((_b = (_a = array[index + 1]) === null || _a === void 0 ? void 0 : _a.getBoundingClientRect()) === null || _b === void 0 ? void 0 : _b.top) + window.pageYOffset - this._offsetY) - 3;
+                let currentElementHeight = Math.round(element.getBoundingClientRect().top + window.pageYOffset);
+                let nextElementHeight = Math.round(((_b = (_a = array[index + 1]) === null || _a === void 0 ? void 0 : _a.getBoundingClientRect()) === null || _b === void 0 ? void 0 : _b.top) + window.pageYOffset);
                 if (!nextElementHeight)
                     nextElementHeight = this._height;
                 return new ScrollProgress.Paragraph(element.getAttribute("id"), currentElementHeight, nextElementHeight - currentElementHeight, element.textContent);
@@ -172,8 +174,8 @@ var ScrollProgress;
             clearTimeout(this._timeOut);
             this._timeOut = setTimeout(() => this.ReInit(), 200);
         }
-        ConfirmMenyIsNotNull(menuBody) {
-            if (menuBody == null)
+        ConfirmMenyIsNotNull(menuChildrens) {
+            if (menuChildrens == null)
                 throw new Error("Menu body can't be NULL");
         }
         CheckParagraphLinks(paragraphs, menuItems) {
@@ -181,7 +183,8 @@ var ScrollProgress;
                 let paragraph = paragraphs.find(x => x.Id == par.Id);
                 if (paragraph)
                     return true;
-                throw new Error(`Menu item with id '${par.Id}' not linked for paragraph!`);
+                else
+                    throw new Error(`Menu item with id '${par.Id}' not linked for paragraph!`);
             });
         }
         ReInit() {
