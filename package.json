@@ -1,6 +1,6 @@
 {
     "name": "dual-side-scroll",
-    "version": "1.2.1",
+    "version": "1.2.3",
     "main": "dist/scroll-progress.min.js",
     "files": [
         "dist/*"
@@ -14,19 +14,20 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/eabrega/scroll-progress.git"
+        "url": "https://github.com/eabrega/scrollspy.git"
     },
-    "homepage": "https://eabrega.github.io/scroll-progress/",
+    "homepage": "https://eabrega.github.io/scrollspy/",
     "keywords": [
-        "scroll progress", 
-        "scroll", 
+        "scrollspy",
+        "scroll progress",
+        "scroll",
         "scroll-progress",
         "dual-side scroll",
-        "javascript", 
-        "typescript", 
-        "library", 
-        "scrolling", 
-        "html5", 
+        "javascript",
+        "typescript",
+        "library",
+        "scrolling",
+        "html5",
         "web"
     ]
 }

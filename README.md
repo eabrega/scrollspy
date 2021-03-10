@@ -1,4 +1,4 @@
-# Scroll progress (dual-side-scroll) v1.2.1
+# Scroll progress (dual-side-scroll) v1.2.3
 [![npm](https://img.shields.io/npm/v/dual-side-scroll?color=green)](https://www.npmjs.com/package/dual-side-scroll)
 ![npm](https://img.shields.io/npm/dy/dual-side-scroll)
 ![npm bundle size](https://img.shields.io/bundlephobia/minzip/dual-side-scroll)
@@ -12,7 +12,7 @@ They can be used together or separately.
 - `onScrolled` - returns to the progress for each scroll event. It is convenient to use when you need to display progress in real time.
 - `onChanged` - works only when one paragraph is replaced to another. This is useful for switching the active menu item in the navigation block.
 
-[LiveDemo](https://eabrega.github.io/scroll-progress)
+[LiveDemo](https://eabrega.github.io/scrollspy)
 
 ## How does it work?
 All you need is a navigation menu with links to the relevant paragraphs in the text. When initializing an object, you need to specify cursor and menu selectors, as well as a callback function.
@@ -46,7 +46,7 @@ For debugging purposes, there is an unminified version with sourcemap.
 
 ## Example
 
-The source code of the page [LiveDemo](https://eabrega.github.io/scroll-progress) script.
+The source code of the page [LiveDemo](https://eabrega.github.io/scrollspy) script.
 ```javascript
 document.addEventListener("DOMContentLoaded", function (event) {
     let currentParagraphName = document.getElementById('current-paragraph-name');

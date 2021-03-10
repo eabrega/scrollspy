@@ -1,4 +1,4 @@
-# Scroll progress (dual-side-scroll) v1.2.1
+# Scroll progress (dual-side-scroll) v1.2.3
 ## Назначение
 Этот крошечный плагин предназначен для отображения прогресса прокрутки страницы в интерактивном режиме.
 Предусмотренно два типа события `onScrolled` и `onChanged`. Они могут использоваться как совместно, так и по отдельности.
@@ -7,7 +7,7 @@
 - `onChanged` - срабатывает только при смене одного параграфа на другой. Это полезно для переключения активного пункта меню в блоке навигации.
 
 
-[LiveDemo](https://eabrega.github.io/scroll-progress)
+[LiveDemo](https://eabrega.github.io/scrollspy)
 
 ## Как это работает
 Все что нужно - это наличие навигационного меню с установленными ссылками на соотвествующие параграфы в тексте.
@@ -44,7 +44,7 @@ npm i dual-side-scroll
 
 ## Пример
 
-Исходный код скрипта [LiveDemo](https://eabrega.github.io/scroll-progress) страницы.
+Исходный код скрипта [LiveDemo](https://eabrega.github.io/scrollspy) страницы.
 ```javascript
 document.addEventListener("DOMContentLoaded", function (event) {
     let currentParagraphName = document.getElementById('current-paragraph-name');
