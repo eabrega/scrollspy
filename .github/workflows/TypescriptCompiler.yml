@@ -13,4 +13,4 @@ jobs:
     - name: npm install typescript
       run: npm install typescript
     - name: tsc
-      run: /home/runner/work/scroll-progress/scroll-progress/node_modules/typescript/bin/tsc -p ./src/tsconfig.json
+      run: /home/runner/work/scrollspy/scrollspy/node_modules/typescript/bin/tsc -p ./src/tsconfig.json
